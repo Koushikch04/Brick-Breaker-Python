@@ -53,12 +53,14 @@ def ball_paddle_collision(ball, paddle):
         y_vel = -ball.VEL * math.cos(angle)
         ball.updateVel(x_vel, y_vel)
 
+
 # Ball collision with screen
 def ball_collision(ball):
     if ball.x - BALL_RADIUS <= 0 or ball.x + BALL_RADIUS >= width:
         ball.updateVel(ball.horizontal_vel * -1, ball.vertical_vel)
     if ball.y + BALL_RADIUS + PADDLE_HEIGHT >= height or ball.y - BALL_RADIUS <= Display_Space:
         ball.updateVel(ball.horizontal_vel, ball.vertical_vel * -1)
+
 
 
 def main():
@@ -74,6 +76,7 @@ def main():
     paused = False
 
     pause_button = pygame.Rect(width // 2, 10, 80, 40)
+
     def reset():
         paddle.x = paddle_x
         paddle.y = paddle_y
@@ -89,8 +92,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     paused = not paused
-
-        pygame.draw.rect(screen, (255, 255, 255), pause_button)
+        # pygame.draw.rect(screen, (255, 255, 255), pause_button)
 
         if not paused:
             keys = pygame.key.get_pressed()
@@ -127,7 +129,7 @@ def main():
             if len(bricks) == 0:
                 bricks = generate_bricks(5, 10)
                 lives = 3
-                display_text(screen,"You Won!", width, height, 3000)
+                display_text(screen, "You Won!", width, height, 3000)
                 reset()
 
             # for i in bricks:
