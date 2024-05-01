@@ -17,9 +17,10 @@ def draw(screen, paddle, ball, bricks, lives, width, height, Score):
     screen.blit(score_display, (width - score_display.get_width(), 0))
     pygame.display.update()
 
+
 def display_text(screen, text, width, height, time_delay):
     text_render = FONT.render(text, 1, "red")
     screen.blit(text_render, (width / 2 - text_render.get_width() /
-                                  2, height / 2 - text_render.get_height() / 2))
+                              2, height / 2 - text_render.get_height() / 2))
     pygame.display.update()
     pygame.time.delay(time_delay)

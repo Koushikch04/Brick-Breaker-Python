@@ -43,20 +43,76 @@ class Brick:
         return Score
 
 
-def generate_bricks(width, displaySpace, rows, cols):
+# def generate_bricks(width, displaySpace, rows, cols):
+#     gap = 2
+#     brick_width = width // cols - gap
+#     brick_height = 20
+#
+#     bricks = []
+#     for row in range(rows):
+#         for col in range(cols):
+#             # display = random.randint(0,1)
+#             # if display:
+#             if not (col < row or col >= cols - row):
+#                 position_x = col * brick_width + gap * col
+#                 position_y = row * brick_height + gap * row + displaySpace
+#                 # position_y += Display_Space
+#                 brick = Brick(position_x, position_y, brick_width, brick_height, 1, [(0, 255, 0), (255, 0, 0)])
+#                 bricks.append(brick)
+#
+#     return bricks
+
+levels = [
+
+    [
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+
+
+
+
+        # [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        # [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        # [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    ],
+    # [
+    #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+    #     [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+    #     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+    # ],
+    # [
+    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+    #     [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+    # ],
+    # [
+    #     [0, 0, 0, 1, 1, 0, 1, 1, 0, 0],
+    #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+    #     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    # ],
+    # [
+    #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
+    #     [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
+    #     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+    # ]
+]
+
+levels_count = len(levels)
+
+
+def generate_bricks(width, displaySpace, rows, cols, level_number):
     gap = 2
     brick_width = width // cols - gap
     brick_height = 20
 
     bricks = []
-    for row in range(rows):
-        for col in range(cols):
-            # display = random.randint(0,1)
-            # if display:
-            if not (col < row or col >= cols - row):
-                position_x = col * brick_width + gap * col
-                position_y = row * brick_height + gap * row + displaySpace
-                # position_y += Display_Space
+    level_data = levels[level_number]
+    for row_index, row in enumerate(level_data):
+        for col_index, brick_type in enumerate(row):
+            if brick_type == 1:
+                position_x = col_index * brick_width + gap * col_index
+                position_y = displaySpace + row_index * brick_height + gap * row_index
                 brick = Brick(position_x, position_y, brick_width, brick_height, 1, [(0, 255, 0), (255, 0, 0)])
                 bricks.append(brick)
 

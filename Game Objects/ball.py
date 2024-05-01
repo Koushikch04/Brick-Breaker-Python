@@ -2,7 +2,7 @@ import math
 import pygame
 
 class Ball:
-    VEL = 5
+    VEL = 10
 
     def __init__(self, x, y, radius, color):
         self.x = x
