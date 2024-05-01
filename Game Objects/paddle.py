@@ -1,6 +1,7 @@
 import math
 import pygame
 
+
 class Paddle:
     VEL = 10
 

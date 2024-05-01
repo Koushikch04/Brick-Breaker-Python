@@ -84,7 +84,7 @@ class Brick:
     def hit(self):
         self.health -= 1
         self.color = self.interpolate(
-            *self.colors, self.health/self.max_health)
+            *self.colors, self.health / self.max_health)
 
     @staticmethod
     def interpolate(color_a, color_b, t):
@@ -121,7 +121,7 @@ def ball_paddle_collision(ball, paddle):
     if not (ball.y + ball.radius >= paddle.y):
         return
 
-    paddle_center = paddle.x + paddle.width/2
+    paddle_center = paddle.x + paddle.width / 2
     distance_to_center = ball.x - paddle_center
 
     percent_width = distance_to_center / paddle.width
@@ -166,10 +166,10 @@ def generate_bricks(rows, cols):
 def main():
     clock = pygame.time.Clock()
 
-    paddle_x = WIDTH/2 - PADDLE_WIDTH/2
+    paddle_x = WIDTH / 2 - PADDLE_WIDTH / 2
     paddle_y = HEIGHT - PADDLE_HEIGHT - 5
     paddle = Paddle(paddle_x, paddle_y, PADDLE_WIDTH, PADDLE_HEIGHT, "black")
-    ball = Ball(WIDTH/2, paddle_y - BALL_RADIUS, BALL_RADIUS, "black")
+    ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, "black")
 
     bricks = generate_bricks(5, 10)
     lives = 3
@@ -177,14 +177,13 @@ def main():
     def reset():
         paddle.x = paddle_x
         paddle.y = paddle_y
-        ball.x = WIDTH/2
+        ball.x = WIDTH / 2
         ball.y = paddle_y - BALL_RADIUS
-
 
     def display_text(text):
         text_render = LIVES_FONT.render(text, 1, "red")
-        win.blit(text_render, (WIDTH/2 - text_render.get_width() /
-                               2, HEIGHT/2 - text_render.get_height()/2))
+        win.blit(text_render, (WIDTH / 2 - text_render.get_width() /
+                               2, HEIGHT / 2 - text_render.get_height() / 2))
         pygame.display.update()
         pygame.time.delay(3000)
 
@@ -217,7 +216,7 @@ def main():
         # lives check
         if ball.y + ball.radius >= HEIGHT:
             lives -= 1
-            ball.x = paddle.x + paddle.width/2
+            ball.x = paddle.x + paddle.width / 2
             ball.y = paddle.y - BALL_RADIUS
             ball.set_vel(0, ball.VEL * -1)
 

@@ -27,19 +27,30 @@ FONT = pygame.font.SysFont("comicsans", 40)
 
 
 def ball_paddle_collision(ball, paddle):
-    if (paddle.x <= ball.x <= paddle.x + paddle.width) and (ball.y + ball.radius >= paddle.y):
+    print("ball paddle collision")
+    if (paddle.x - 10 <= ball.x <= paddle.x + paddle.width) and (ball.y + ball.radius + 5 >= paddle.y):
         paddle_center = paddle.x + paddle.width / 2
         distance_to_center = ball.x - paddle_center
-        percent_width = distance_to_center / (paddle.width / 2)
-        angle = percent_width * (math.pi / 4)
-        x_vel = ball.VEL * math.sin(angle)
-        y_vel = -abs(ball.VEL) * math.cos(angle)
-        if x_vel != 0 and y_vel != 0:
-            ball.updateVel(x_vel, y_vel)
+        # percent_width = distance_to_center / (paddle.width / 2)
+        # angle = percent_width * (math.pi / 4)
+        # x_vel = ball.VEL * math.sin(angle)
+        # y_vel = -abs(ball.VEL) * math.cos(angle)
+        # if x_vel != 0 and y_vel != 0:
+        #     ball.updateVel(x_vel, y_vel)
+        percent_width = distance_to_center / paddle.width
+        angle = percent_width * 45
+        angle_radians = math.radians(angle)
+        print(angle_radians)
+
+        x_vel = math.sin(angle_radians) * ball.VEL
+        y_vel = math.cos(angle_radians) * ball.VEL * -1
+        print(x_vel, y_vel)
+
+        ball.updateVel(x_vel, y_vel)
 
 
 def ball_collision(ball):
-    if ball.x - BALL_RADIUS <= 0 or ball.x + BALL_RADIUS >= width:
+    if ball.x <= 0 or ball.x + BALL_RADIUS >= width:
         ball.updateVel(ball.horizontal_vel * -1, ball.vertical_vel)
     if ball.y + BALL_RADIUS >= height:
         ball.updateVel(ball.horizontal_vel, ball.vertical_vel * -1)
@@ -140,6 +151,8 @@ def main():
     clock = pygame.time.Clock()
     paddle_x = width / 2 - PADDLE_WIDTH / 2
     paddle_y = height - PADDLE_HEIGHT - 5
+    # paddle_x = 0
+    # paddle_y = height - PADDLE_HEIGHT - 5
     paddle = Paddle(paddle_x, paddle_y, PADDLE_WIDTH, PADDLE_HEIGHT, "black")
     ball = Ball(width / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, "black")
 
@@ -209,10 +222,10 @@ def main():
                           quit_button.y <= mouse_pos[1] <= quit_button.y + quit_button.height):
                         quit_button.action()
         screen.fill((255, 255, 255))  # Clear the screen
-        print(gameState)
+        # print(gameState)
         if gameState == "playing":
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] and paddle.x + paddle.VEL >= 0:
+            if keys[pygame.K_LEFT] and paddle.x + paddle.VEL + 0.5 > 0:
                 paddle.move(-1)
             if keys[pygame.K_RIGHT] and paddle.x + paddle.width + paddle.VEL <= width:
                 paddle.move(1)
