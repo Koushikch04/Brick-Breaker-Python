@@ -3,15 +3,17 @@ import pygame
 
 
 class Ball:
-    VEL = 10
+
 
     def __init__(self, x, y, radius, color):
         self.x = x
         self.y = y
         self.color = color
+        self.VEL = 8
         self.horizontal_vel = self.VEL
         self.vertical_vel = -self.VEL
         self.radius = radius
+
 
     # def update_vel(cls, level_index):
     #     # Define how to update VEL based on the level index

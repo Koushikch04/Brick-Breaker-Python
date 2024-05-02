@@ -12,8 +12,7 @@ class Brick:
         self.health = health
         self.max_health = health
         self.colors = colors
-
-        self.color = colors[int(random()*len(colors))]
+        self.color = colors[0]
 
     def draw(self, win):
         pygame.draw.rect(
@@ -40,42 +39,18 @@ class Brick:
         return Score
 
     def hit(self, Score):
+        print(self.max_health,self.health)
         self.health -= 1
         Score += 100
-        print(Score)
+        self.color = self.interpolate(*self.colors, self.health / self.max_health)
         return Score
 
     @staticmethod
     def interpolate(color_a, color_b, t):
-        # 'color_a' and 'color_b' are RGB tuples
-        # 't' is a value between 0.0 and 1.0
-        # this is a naive interpolation
         return tuple(int(a + (b - a) * t) for a, b in zip(color_a, color_b))
 
 
-# def generate_bricks(width, displaySpace, rows, cols):
-#     gap = 2
-#     brick_width = width // cols - gap
-#     brick_height = 20
-#
-#     bricks = []
-#     for row in range(rows):
-#         for col in range(cols):
-#             # display = random.randint(0,1)
-#             # if display:
-#             if not (col < row or col >= cols - row):
-#                 position_x = col * brick_width + gap * col
-#                 position_y = row * brick_height + gap * row + displaySpace
-#                 # position_y += Display_Space
-#                 brick = Brick(position_x, position_y, brick_width, brick_height, 1, [(0, 255, 0), (255, 0, 0)])
-#                 bricks.append(brick)
-#
-#     return bricks
-
 levels = [[
-    # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    # [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
 
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -86,11 +61,11 @@ levels = [[
         [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
     ],
-    # [
-    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-    #     [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-    # ],
+    [
+        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+    ],
     # [
     #     [0, 0, 0, 1, 1, 0, 1, 1, 0, 0],
     #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -118,7 +93,7 @@ def generate_bricks(width, displaySpace, rows, cols, level_number):
             if brick_type == 1:
                 position_x = col_index * brick_width + gap * col_index
                 position_y = displaySpace + row_index * brick_height + gap * row_index
-                brick = Brick(position_x, position_y, brick_width, brick_height, 1, [(0, 255, 0), (255, 0, 0)])
+                brick = Brick(position_x, position_y, brick_width, brick_height, 1, [(0, 0, 255), (255, 0, 0)])
                 bricks.append(brick)
 
     return bricks

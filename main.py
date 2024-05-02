@@ -71,16 +71,13 @@ def updateScores(scores):
 def load_high_scores():
     scores = {}
     file_name = "highest_scores.txt"
-    # Check if the file exists
     if os.path.exists(file_name):
         try:
             with open(file_name, "r") as file:
                 for line in file:
                     username, score = line.strip().split(":")
                     scores[username] = int(score)
-            # Sort scores by value in descending order
             sorted_scores = dict(sorted(scores.items(), key=lambda item: item[1], reverse=True))
-            # Get top ten scores
             top_ten_scores = dict(list(sorted_scores.items())[:10])
             return top_ten_scores
         except Exception as e:
@@ -92,23 +89,19 @@ def save_high_scores(scores):
     file_name = "highest_scores.txt"
     try:
         updated_scores = {}
-        # Load existing scores
         if os.path.exists(file_name):
             with open(file_name, "r") as file:
                 for line in file:
                     username, score = line.strip().split(":")
                     score = int(score)
-                    # Update score if the username already exists and the new score is higher
                     if username in scores and scores[username] > score:
                         updated_scores[username] = scores[username]
                     else:
                         updated_scores[username] = score
-        # Add new scores
         for username, score in scores.items():
             if username not in updated_scores:
                 updated_scores[username] = score
 
-        # Write updated scores to the file
         with open(file_name, "w") as file:
             for username, score in updated_scores.items():
                 file.write(f"{username}:{score}\n")
@@ -120,8 +113,8 @@ def display_leaderboard():
     run = True
     while run:
         screen.fill(black)
-        draw_text("Leaderboard", font40, white, int(width / 2 - 100), 50)
-        draw_text("Username    Score", font30, white, 50, 150)
+        draw_text("Leaderboard", font40, green, int(width / 2 - 100), 50)
+        draw_text("Username    Score", font30, black, 50, 150)
         y = 200
         scores = load_high_scores()
         for username, score in scores.items():
@@ -199,6 +192,8 @@ def play_again():
     global gameState, level_index, Score
     gameState = "playing"  # Set the game state to playing
     level_index = 0
+    scores[username] = Score
+    updateScores(scores)
     Score = 0
     print("Play Again button clicked!")
     play_again_button.visible = False
@@ -352,6 +347,9 @@ def main():
                 # bricks = generate_bricks(width, Display_Space, 5, 10)
                 lives = 3
                 display_text(screen, "You Lost!", width, height, 3000)
+                print(username,Score)
+                scores[username] = Score
+                updateScores(scores)
                 reset("Lost")
                 gameState = "Won"
                 print('reset is being called here')
@@ -364,6 +362,8 @@ def main():
                     display_text(screen, "You Won!", width, height, 1000)
                     print("GameSate set here 1")
                     gameState = "Won"
+                    scores[username] = Score
+                    updateScores(scores)
                     print('reset is being called here')
                     play_again_button.visible = True
                     quit_button.visible = True
