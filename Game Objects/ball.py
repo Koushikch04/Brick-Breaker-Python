@@ -13,6 +13,15 @@ class Ball:
         self.vertical_vel = -self.VEL
         self.radius = radius
 
+    # def update_vel(cls, level_index):
+    #     # Define how to update VEL based on the level index
+    #     if level_index == 0:
+    #         cls.VEL = 10
+    #     elif level_index == 1:
+    #         cls.VEL = 15
+    #     else:
+    #         cls.VEL = 20
+
     def move(self):
         # print(self.horizontal_vel,self.vertical_vel)
         # if self.horizontal_vel == 6.50208949395206 and self.vertical_vel == -7.597554357333564:

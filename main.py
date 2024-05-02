@@ -1,4 +1,6 @@
 import math
+import os
+
 import pygame
 import sys
 
@@ -19,11 +21,132 @@ BALL_RADIUS = 10
 Score = 0
 gameState = "Start"
 level_index = 0
+font30 = pygame.font.SysFont('Constantia', 30)
+font40 = pygame.font.SysFont('Constantia', 40)
+font20 = pygame.font.SysFont('Constantia', 20)
+font60 = pygame.font.SysFont('Constantia', 60)
+username = ""
+scores = {}
+
+red = (255, 0, 0)
+green = (0, 255, 0)
+white = (255, 255, 255)
+gray = (128, 128, 128)
+black = (0, 0, 0)
 
 pygame.init()
 screen = pygame.display.set_mode([width, height])
 pygame.display.set_caption("BRICK BREAKER")
 FONT = pygame.font.SysFont("comicsans", 40)
+
+
+def updateScores(scores):
+    file_name = "highest_scores.txt"
+    try:
+        updated_scores = {}
+        # Load existing scores
+        if os.path.exists(file_name):
+            with open(file_name, "r") as file:
+                for line in file:
+                    username, score = line.strip().split(":")
+                    score = int(score)
+                    # Update score if the username already exists and the new score is higher
+                    if username in scores and scores[username] > score:
+                        updated_scores[username] = scores[username]
+                    else:
+                        updated_scores[username] = score
+        # Add new scores
+        for username, score in scores.items():
+            if username not in updated_scores:
+                updated_scores[username] = score
+
+        # Write updated scores to the file
+        with open(file_name, "w") as file:
+            for username, score in updated_scores.items():
+                file.write(f"{username}:{score}\n")
+    except Exception as e:
+        print("Error saving high scores:", e)
+
+
+def load_high_scores():
+    scores = {}
+    file_name = "highest_scores.txt"
+    # Check if the file exists
+    if os.path.exists(file_name):
+        try:
+            with open(file_name, "r") as file:
+                for line in file:
+                    username, score = line.strip().split(":")
+                    scores[username] = int(score)
+            # Sort scores by value in descending order
+            sorted_scores = dict(sorted(scores.items(), key=lambda item: item[1], reverse=True))
+            # Get top ten scores
+            top_ten_scores = dict(list(sorted_scores.items())[:10])
+            return top_ten_scores
+        except Exception as e:
+            print("Error loading high scores:", e)
+    return scores
+
+
+def save_high_scores(scores):
+    file_name = "highest_scores.txt"
+    try:
+        updated_scores = {}
+        # Load existing scores
+        if os.path.exists(file_name):
+            with open(file_name, "r") as file:
+                for line in file:
+                    username, score = line.strip().split(":")
+                    score = int(score)
+                    # Update score if the username already exists and the new score is higher
+                    if username in scores and scores[username] > score:
+                        updated_scores[username] = scores[username]
+                    else:
+                        updated_scores[username] = score
+        # Add new scores
+        for username, score in scores.items():
+            if username not in updated_scores:
+                updated_scores[username] = score
+
+        # Write updated scores to the file
+        with open(file_name, "w") as file:
+            for username, score in updated_scores.items():
+                file.write(f"{username}:{score}\n")
+    except Exception as e:
+        print("Error saving high scores:", e)
+
+
+def display_leaderboard():
+    run = True
+    while run:
+        screen.fill(black)
+        draw_text("Leaderboard", font40, white, int(width / 2 - 100), 50)
+        draw_text("Username    Score", font30, white, 50, 150)
+        y = 200
+        scores = load_high_scores()
+        for username, score in scores.items():
+            draw_text(f"{username:<12}  {score}", font30, white, 50, y)
+            y += 50
+
+        pygame.draw.rect(screen, white, (50, height - 100, 100, 50))
+        draw_text("Back", font30, black, 65, height - 90)
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                if 50 <= mouse_x <= 150 and height - 100 <= mouse_y <= height - 50:
+                    run = False  # Back button clicked
+
+    return
+
+
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
 
 
 def ball_paddle_collision(ball, paddle):
@@ -50,7 +173,7 @@ def ball_paddle_collision(ball, paddle):
 
 
 def ball_collision(ball):
-    if ball.x <= 0 or ball.x + BALL_RADIUS >= width:
+    if ball.x - BALL_RADIUS <= 0 or ball.x + BALL_RADIUS >= width:
         ball.updateVel(ball.horizontal_vel * -1, ball.vertical_vel)
     if ball.y + BALL_RADIUS >= height:
         ball.updateVel(ball.horizontal_vel, ball.vertical_vel * -1)
@@ -97,54 +220,30 @@ play_again_button = Button("Play Again", width // 2 - 100, height // 2 - 20, 200
 quit_button = Button("Quit", width // 2 - 60, height // 2 + 40, 120, 40, (200, 200, 200), (150, 150, 150),
                      (0, 0, 0), quit_game)
 
-# levels = [
-#     {"bricks": generate_bricks(width, Display_Space, 2, 5)},
-#     {"bricks": generate_bricks(width, Display_Space, 5, 12)},
-# ]
+leaderboard_button = Button("Leaderboard", width // 2 - 100, height // 2 + 250, 200, 50, (200, 200, 200),
+                            (150, 150, 150),
+                            (0, 0, 0), )
 
-levels = [
-    [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
-    [
-        [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-    ],
-    # [
-    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-    #     [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-    # ],
-    # [
-    #     [0, 0, 0, 1, 1, 0, 1, 1, 0, 0],
-    #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
-    #     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    # ],
-    # [
-    #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
-    #     [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-    #     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-    # ]
-]
+username_entered = False
+while not username_entered:
+    screen.fill((0, 0, 0))  # Clear the screen
+    draw_text("Enter Your Username:", font30, white, 150, 300)
 
+    # Render the username on the screen
+    username_rendered = font30.render(username, True, white)
+    screen.blit(username_rendered, (150, 350))
 
-# def load_level(level_number):
-#     brick_width = width // len(levels[level_number][0])
-#     brick_height = (height - Display_Space) // len(levels[level_number])
-#     bricks = []
-#     for row_index, row in enumerate(levels[level_number]):
-#         for col_index, brick_type in enumerate(row):
-#             if brick_type == 1:
-#                 brick = Brick(col_index * brick_width, Display_Space + row_index * brick_height, brick_width,
-#                               brick_height, 1, [(0, 255, 0), (255, 0, 0)])
-#                 bricks.append(brick)
-#     return bricks
+    pygame.display.update()
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                username_entered = True
+            elif event.key == pygame.K_BACKSPACE:
+                username = username[:-1]
+            else:
+                username += event.unicode
 
-# Load levels progressively
-# all_levels = [load_level(level_number) for level_number in range(len(levels))]
 
 def main():
     global Score, gameState, level_index
@@ -158,7 +257,7 @@ def main():
 
     # bricks = levels[level_index]["bricks"]
     bricks = generate_bricks(width, Display_Space, 2, 10, level_index)
-    lives = 30
+    lives = 3
     run = True
     paused = False
     win_timer = 0
@@ -186,7 +285,7 @@ def main():
             level_index = 0
             bricks = generate_bricks(width, Display_Space, 2, 10, level_index)
             Score = 0
-            lives = 30
+            lives = 3
             paddle.x = paddle_x
             paddle.y = paddle_y
             ball.x = width / 2
@@ -221,13 +320,17 @@ def main():
                     elif (quit_button.x <= mouse_pos[0] <= quit_button.x + quit_button.width and
                           quit_button.y <= mouse_pos[1] <= quit_button.y + quit_button.height):
                         quit_button.action()
+                    elif (leaderboard_button.x <= mouse_pos[0] <= leaderboard_button.x + leaderboard_button.width and
+                          leaderboard_button.y <= mouse_pos[1] <= leaderboard_button.y + leaderboard_button.height):
+                        print("Leaderboard Displayed")
+                        display_leaderboard()
         screen.fill((255, 255, 255))  # Clear the screen
         # print(gameState)
         if gameState == "playing":
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT] and paddle.x + paddle.VEL + 0.5 > 0:
+            if keys[pygame.K_LEFT] and paddle.x + paddle.VEL - 20 > 0:
                 paddle.move(-1)
-            if keys[pygame.K_RIGHT] and paddle.x + paddle.width + paddle.VEL <= width:
+            if keys[pygame.K_RIGHT] and paddle.x + paddle.width + paddle.VEL + 20 <= width:
                 paddle.move(1)
             ball.move()
             ball_collision(ball)
@@ -250,6 +353,10 @@ def main():
                 lives = 3
                 display_text(screen, "You Lost!", width, height, 3000)
                 reset("Lost")
+                gameState = "Won"
+                print('reset is being called here')
+                play_again_button.visible = True
+                quit_button.visible = True
 
             if len(bricks) == 0:
                 # bricks = generate_bricks(width, Display_Space, 5, 10)
@@ -275,9 +382,13 @@ def main():
                 print("Hello", win_timer)
                 display_text(screen, "You Won!", width, height, 0)
             else:
-                print("world")
+                # print("world")
+                # global Score
+                scores[username] = Score
+                save_high_scores(scores)
                 play_again_button.draw(screen)
                 quit_button.draw(screen)
+                leaderboard_button.draw(screen)
                 # if play_again_clicked:
                 #     print("condition")
                 #     play_again()

@@ -1,3 +1,5 @@
+from random import random
+
 import pygame
 
 
@@ -10,7 +12,8 @@ class Brick:
         self.health = health
         self.max_health = health
         self.colors = colors
-        self.color = colors[0]
+
+        self.color = colors[int(random()*len(colors))]
 
     def draw(self, win):
         pygame.draw.rect(
@@ -42,6 +45,13 @@ class Brick:
         print(Score)
         return Score
 
+    @staticmethod
+    def interpolate(color_a, color_b, t):
+        # 'color_a' and 'color_b' are RGB tuples
+        # 't' is a value between 0.0 and 1.0
+        # this is a naive interpolation
+        return tuple(int(a + (b - a) * t) for a, b in zip(color_a, color_b))
+
 
 # def generate_bricks(width, displaySpace, rows, cols):
 #     gap = 2
@@ -63,24 +73,24 @@ class Brick:
 #     return bricks
 
 levels = [[
+    # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    # [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
 
-
-
-
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+],
     [
         [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
     ],
-    [
-        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-    ],
+    # [
+    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+    #     [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+    #     [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+    # ],
     # [
     #     [0, 0, 0, 1, 1, 0, 1, 1, 0, 0],
     #     [0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
