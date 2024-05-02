@@ -1,6 +1,6 @@
 import math
 import os
-
+import pygame.mixer
 import pygame
 import sys
 
@@ -38,7 +38,12 @@ pygame.init()
 screen = pygame.display.set_mode([width, height])
 pygame.display.set_caption("BRICK BREAKER")
 FONT = pygame.font.SysFont("comicsans", 40)
-
+# Load the sound effect file for brick collision
+pygame.mixer.init()
+brick_sound = pygame.mixer.Sound("./BackGroundMusic/brick-dropped-on-other-bricks-14722-[AudioTrimmer.com].mp3")
+level_Over =  pygame.mixer.Sound("./BackGroundMusic/mixkit-game-level-completed-2059.wav")
+game_Lost =   pygame.mixer.Sound("./BackGroundMusic/mixkit-arcade-fast-game-over-233.wav")
+pygame.mixer.music.load("./BackGroundMusic/03. Stage 1.mp3")
 
 def updateScores(scores):
     file_name = "highest_scores.txt"
@@ -185,6 +190,7 @@ def start_game():
     global gameState
     gameState = "playing"
     print("Start button clicked!")
+    pygame.mixer.music.play(-1)
     start_button.action = None
 
 
@@ -265,6 +271,8 @@ def main():
         if Condition == "Progress":
             level_index += 1
             if level_index < levels_count:
+                level_Over.play()
+                pygame.time.delay(3000)
                 bricks = generate_bricks(width, Display_Space, 2, 10, level_index)
                 ball.x = paddle.x + paddle.width / 2
                 ball.y = paddle.y - BALL_RADIUS
@@ -336,6 +344,7 @@ def main():
                     bricks.remove(brick)
 
             if ball.y + ball.radius >= height - PADDLE_HEIGHT:
+                game_Lost.play()
                 lives -= 1
                 pygame.time.delay(1000)
                 ball.x = paddle.x + paddle.width / 2

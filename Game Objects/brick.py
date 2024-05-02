@@ -1,7 +1,9 @@
 from random import random
 
 import pygame
-
+import pygame.mixer
+pygame.mixer.init()
+brick_sound = pygame.mixer.Sound("./BackGroundMusic/brick-dropped-on-other-bricks-14722-[AudioTrimmer.com].mp3")
 
 class Brick:
     def __init__(self, x, y, width, height, health, colors):
@@ -39,6 +41,7 @@ class Brick:
         return Score
 
     def hit(self, Score):
+        brick_sound.play()
         print(self.max_health,self.health)
         self.health -= 1
         Score += 100
